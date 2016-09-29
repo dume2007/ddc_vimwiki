@@ -12,8 +12,11 @@ body {
 
 .container {
   width: 90%;
-  max-width: 600px;
   margin: 0 auto;
+}
+
+.header_main {
+  max-width: 600px;
 }
 
 section {
@@ -58,7 +61,7 @@ header h1 {
 }
 
 header h1:before {
-  content: "./ ";
+  content: " ";
   font-size: 24px;
 }
 
@@ -66,6 +69,12 @@ header h2 {
   font-size: 18px;
   font-weight: 300;
   color: #666;
+}
+
+footer {
+  text-align: right;
+  padding-right: 20px;
+  margin: 80px 30px 30px;
 }
 
 #downloads .btn {
