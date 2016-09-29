@@ -32,21 +32,46 @@
       <section id="main_content">
       
 <h1 id="toc_1">一、发布订阅消息系统 2016-09-20</h1>
-
+<div class="toc">
+<ul>
+<li><a href="#toc_1">一、发布订阅消息系统 2016-09-20</a>
+<ul>
+<li><a href="#toc_1.1">1) zookeeper集群</a>
+<ul>
+<li><a href="#toc_1.1.1">启动3台服务器</a>
+<li><a href="#toc_1.1.2">监听端口</a>
+<li><a href="#toc_1.1.3">实际执行的命令</a>
+<li><a href="#toc_1.1.4">查杀进程</a>
+<li><a href="#toc_1.1.5">本地Java环境目录</a>
+</ul>
+<li><a href="#toc_1.2">2）kafka集群</a>
+<ul>
+<li><a href="#toc_1.2.1">启动3台kafka broker</a>
+<li><a href="#toc_1.2.2">监听端口</a>
+<li><a href="#toc_1.2.3">查看topic信息</a>
+<li><a href="#toc_1.2.4">查看offset最小值</a>
+<li><a href="#toc_1.2.5">查看offset最大值</a>
+<li><a href="#toc_1.2.6">重设topic offset（将offset记录到本地或broker）</a>
+<li><a href="#toc_1.2.7">重设topic offset（将offset记录到zookeeper为此方式）</a>
+</ul>
+<li><a href="#toc_1.3">3）Kafka Connect从文件导入数据流</a>
+<ul>
+<li><a href="#toc_1.3.1">启动Connect服务</a>
+<li><a href="#toc_1.3.2">支持的Connector</a>
+</ul>
+</ul>
+</ul>
+</div>
 <h2 id="toc_1.1">1) zookeeper集群</h2>
 
-<p>
-启动3台服务器：
-</p>
+<h3 id="toc_1.1.1">启动3台服务器</h3>
 <pre>
 sudo bin/zookeeper-server-start.sh config/zookeeper.properties &gt;&gt; /tmp/zookeeper-startup.log &amp;
 sudo bin/zookeeper-server-start.sh config/zookeeper-1.properties &gt;&gt; /tmp/zookeeper-startup-1.log &amp;
 sudo bin/zookeeper-server-start.sh config/zookeeper-2.properties &gt;&gt; /tmp/zookeeper-startup-2.log &amp;
 </pre>
 
-<p>
-监听端口：
-</p>
+<h3 id="toc_1.1.2">监听端口</h3>
 
 <p>
 127.0.0.1:2181  
@@ -54,30 +79,24 @@ sudo bin/zookeeper-server-start.sh config/zookeeper-2.properties &gt;&gt; /tmp/z
 127.0.0.1:2183  
 </p>
 
-<p>
-实际执行的命令：
-</p>
+<h3 id="toc_1.1.3">实际执行的命令</h3>
 <pre>
 bin/kafka-run-class.sh -name zookeeper -loggc org.apache.zookeeper.server.quorum.QuorumPeerMain config/zookeeper-1.properties
 </pre>
 
-<p>
-查杀进程：
-</p>
+<h3 id="toc_1.1.4">查杀进程</h3>
 <pre>
 ps aux|grep zookeeper-server-start
 sudo kill -s TERM pid
 </pre>
 
+<h3 id="toc_1.1.5">本地Java环境目录</h3>
 <p>
-本地Java环境目录：
 /usr/lib/jvm/default-java
 </p>
 
 <h2 id="toc_1.2">2）kafka集群</h2>
-<p>
-启动3台kafka broker：
-</p>
+<h3 id="toc_1.2.1">启动3台kafka broker</h3>
 <pre>
 sudo bin/kafka-server-start.sh config/server.properties &gt;&gt; /tmp/kafka-startup.log &amp;
 sudo bin/kafka-server-start.sh config/server-1.properties &gt;&gt; /tmp/kafka-startup-1.log &amp;
@@ -88,9 +107,7 @@ sudo bin/kafka-server-start.sh config/server-2.properties &gt;&gt; /tmp/kafka-st
 ps aux|grep kafka-server-start.sh
 </p>
 
-<p>
-监听端口：
-</p>
+<h3 id="toc_1.2.2">监听端口</h3>
 
 <p>
 PLAINTEXT://127.0.0.1:9092
@@ -98,52 +115,38 @@ PLAINTEXT://127.0.0.1:9093
 PLAINTEXT://127.0.0.1:9094
 </p>
 
-<p>
-查看topic信息：
-</p>
+<h3 id="toc_1.2.3">查看topic信息</h3>
 <pre>
 bin/kafka-topics.sh --describe  --zookeeper 127.0.0.1:2181 --topic test
 </pre>
 
-<p>
-查看offset最小值：
-</p>
+<h3 id="toc_1.2.4">查看offset最小值</h3>
 <pre>
 bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094 --topic test --time -2
 </pre>
 
-<p>
-查看offset最大值：
-</p>
+<h3 id="toc_1.2.5">查看offset最大值</h3>
 <pre>
 bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094 --topic test --time -1
 </pre>
 
-<p>
-重设topic offset（将offset记录到本地或broker）：
-</p>
+<h3 id="toc_1.2.6">重设topic offset（将offset记录到本地或broker）</h3>
 <pre>
 $topic-&gt;consumeStart($partition, $offset);
 </pre>
 
-<p>
-重设topic offset（将offset记录到zookeeper为此方式）：
-</p>
+<h3 id="toc_1.2.7">重设topic offset（将offset记录到zookeeper为此方式）</h3>
 <pre a) bin/zookeeper-shell.sh 127.0.0.1:2181>
 b) set /consumers/myConsumerGroup9/offsets/test/1 366380
 </pre>
 
 <h2 id="toc_1.3">3）Kafka Connect从文件导入数据流</h2>
-<p>
-启动Connect服务：
-</p>
+<h3 id="toc_1.3.1">启动Connect服务</h3>
 <pre>
 sudo bin/connect-distributed.sh config/connect-distributed.properties
 </pre>
 
-<p>
-支持的Connector:
-</p>
+<h3 id="toc_1.3.2">支持的Connector</h3>
 <pre>
 org.apache.kafka.connect.source.SourceConnector, org.apache.kafka.connect.sink.SinkConnector, org.apache.kafka.connect.tools.VerifiableSinkConnector, 
 org.apache.kafka.connect.file.FileStreamSourceConnector, org.apache.kafka.connect.file.FileStreamSinkConnector, 
