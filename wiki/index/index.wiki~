@@ -83,6 +83,11 @@ org.apache.kafka.connect.file.FileStreamSourceConnector, org.apache.kafka.connec
 org.apache.kafka.connect.tools.VerifiableSourceConnector
 }}}
 
+== 4）参考资料 ==
+- 官方文档：http://kafka.apache.org/quickstart.html
+- php插件：https://github.com/arnaud-lb/php-rdkafka
+- Connect插件文档：http://docs.confluent.io/3.0.1/connect/userguide.html#rest-interface
+
 
 %title 邓莫尔的维基世界
 
