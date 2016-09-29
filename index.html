@@ -59,7 +59,12 @@
 <li><a href="#toc_1.3.1">启动Connect服务</a>
 <li><a href="#toc_1.3.2">支持的Connector</a>
 </ul>
-<li><a href="#toc_1.4">4）参考资料</a>
+<li><a href="#toc_1.4">4）kafka性能测试</a>
+<ul>
+<li><a href="#toc_1.4.1">测试Kafka Producer的性能</a>
+<li><a href="#toc_1.4.2">测试Kafka Consumer的性能</a>
+</ul>
+<li><a href="#toc_1.5">5）参考资料</a>
 </ul>
 </ul>
 </div>
@@ -154,7 +159,20 @@ org.apache.kafka.connect.file.FileStreamSourceConnector, org.apache.kafka.connec
 org.apache.kafka.connect.tools.VerifiableSourceConnector
 </pre>
 
-<h2 id="toc_1.4">4）参考资料</h2>
+<h2 id="toc_1.4">4）kafka性能测试</h2>
+
+<h3 id="toc_1.4.1">测试Kafka Producer的性能</h3>
+<pre>
+bin/kafka-producer-perf-test.sh --topic test --num-records 500000 --record-size=51200 --producer-props bootstrap.servers=127.0.0.1:9092 --throughput 1000
+</pre>
+
+<h3 id="toc_1.4.2">测试Kafka Consumer的性能</h3>
+<pre>
+bin/kafka-consumer-perf-test.sh
+</pre>
+
+
+<h2 id="toc_1.5">5）参考资料</h2>
 <ul>
 <li>
 官方文档：<a href="http://kafka.apache.org/quickstart.html">http://kafka.apache.org/quickstart.html</a>

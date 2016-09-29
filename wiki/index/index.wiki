@@ -83,7 +83,20 @@ org.apache.kafka.connect.file.FileStreamSourceConnector, org.apache.kafka.connec
 org.apache.kafka.connect.tools.VerifiableSourceConnector
 }}}
 
-== 4）参考资料 ==
+== 4）kafka性能测试 ==
+
+=== 测试Kafka Producer的性能 ===
+{{{
+bin/kafka-producer-perf-test.sh --topic test --num-records 500000 --record-size=51200 --producer-props bootstrap.servers=127.0.0.1:9092 --throughput 1000
+}}}
+
+=== 测试Kafka Consumer的性能  ===
+{{{
+bin/kafka-consumer-perf-test.sh
+}}}
+
+
+== 5）参考资料 ==
 - 官方文档：http://kafka.apache.org/quickstart.html
 - php插件：https://github.com/arnaud-lb/php-rdkafka
 - Connect插件文档：http://docs.confluent.io/3.0.1/connect/userguide.html#rest-interface

@@ -152,8 +152,13 @@ ul li:before {
   line-height: 16px;
 }
 
+#ds-reset,#ds-related-reads {
+  color: #b5a9a9;
+}
+
 #ds-thread #ds-reset li.ds-tab:before {
   content: "";
+  margin: 0;
 }
 
 #ds-thread #ds-reset .ds-login-buttons .ds-service-list li:before {

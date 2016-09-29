@@ -152,6 +152,10 @@ ul li:before {
   line-height: 16px;
 }
 
+#ds-thread #ds-reset .ds-comment-body p {
+  color: #b5a9a9;
+}
+
 #ds-thread #ds-reset li.ds-tab:before {
   content: "";
   margin: 0;
