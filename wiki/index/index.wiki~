@@ -1,0 +1,88 @@
+= 一、发布订阅消息系统 2016-09-20 =
+
+== 1) zookeeper集群 ==
+
+启动3台服务器：
+{{{
+sudo bin/zookeeper-server-start.sh config/zookeeper.properties >> /tmp/zookeeper-startup.log &
+sudo bin/zookeeper-server-start.sh config/zookeeper-1.properties >> /tmp/zookeeper-startup-1.log &
+sudo bin/zookeeper-server-start.sh config/zookeeper-2.properties >> /tmp/zookeeper-startup-2.log &
+}}}
+
+监听端口：
+
+127.0.0.1:2181  
+127.0.0.1:2182  
+127.0.0.1:2183  
+
+实际执行的命令：
+{{{
+bin/kafka-run-class.sh -name zookeeper -loggc org.apache.zookeeper.server.quorum.QuorumPeerMain config/zookeeper-1.properties
+}}}
+
+查杀进程：
+{{{
+ps aux|grep zookeeper-server-start
+sudo kill -s TERM pid
+}}}
+
+本地Java环境目录：
+/usr/lib/jvm/default-java
+
+== 2）kafka集群 ==
+启动3台kafka broker：
+{{{
+sudo bin/kafka-server-start.sh config/server.properties >> /tmp/kafka-startup.log &
+sudo bin/kafka-server-start.sh config/server-1.properties >> /tmp/kafka-startup-1.log &
+sudo bin/kafka-server-start.sh config/server-2.properties >> /tmp/kafka-startup-2.log &
+}}}
+
+ps aux|grep kafka-server-start.sh
+
+监听端口：
+
+PLAINTEXT://127.0.0.1:9092
+PLAINTEXT://127.0.0.1:9093
+PLAINTEXT://127.0.0.1:9094
+
+查看topic信息：
+{{{
+bin/kafka-topics.sh --describe  --zookeeper 127.0.0.1:2181 --topic test
+}}}
+
+查看offset最小值：
+{{{
+bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094 --topic test --time -2
+}}}
+
+查看offset最大值：
+{{{
+bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list 127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094 --topic test --time -1
+}}}
+
+重设topic offset（将offset记录到本地或broker）：
+{{{
+$topic->consumeStart($partition, $offset);
+}}}
+
+重设topic offset（将offset记录到zookeeper为此方式）：
+{{{a) bin/zookeeper-shell.sh 127.0.0.1:2181
+b) set /consumers/myConsumerGroup9/offsets/test/1 366380
+}}}
+
+== 3）Kafka Connect从文件导入数据流 ==
+启动Connect服务：
+{{{
+sudo bin/connect-distributed.sh config/connect-distributed.properties
+}}}
+
+支持的Connector:
+{{{
+org.apache.kafka.connect.source.SourceConnector, org.apache.kafka.connect.sink.SinkConnector, org.apache.kafka.connect.tools.VerifiableSinkConnector, 
+org.apache.kafka.connect.file.FileStreamSourceConnector, org.apache.kafka.connect.file.FileStreamSinkConnector, 
+org.apache.kafka.connect.tools.VerifiableSourceConnector
+}}}
+
+
+%title 邓莫尔的维基世界
+
