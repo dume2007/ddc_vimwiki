@@ -84,7 +84,7 @@ javac -version
 地址: http://www.oracle.com/technetwork/articles/javase/index-jsp-138363.html
 选择相应的 .gz包下载 
 
-=== 2. 解压缩,放到指定目录(以jdk-7u60-linux-x64.gz为例) ===
+=== 2.解压缩,放到指定目录(以jdk-7u60-linux-x64.gz为例) ===
 
 {{{
 # 创建目录:
