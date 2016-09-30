@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../stylesheets/print.css" media="print">
 
-    <title>工作便签</title>
+    <title>%title%</title>
   </head>
 
   <body>
@@ -21,8 +21,7 @@
         <section id="downloads">
           <a href="../index.html" class="btn">首页</a>
           <a href="../php/index.html" class="btn">PHP</a>
-  	  <a href="../linux/index.html" class="btn">Linux</a>
-  	  <a href="../note/index.html" class="btn">便签</a>
+          <a href="../note/index.html" class="btn">便签</a>
           <a href="../daily/index.html" class="btn">日记</a>
           <a href="https://github.com/dume2007/ddc_vimwiki" target="_blank" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
@@ -31,9 +30,7 @@
 
     <div class="container">
       <section id="main_content">
-      
-<h1 id="toc_1">工作便签</h1>
-
+      %content%
       </section>
     </div>
 

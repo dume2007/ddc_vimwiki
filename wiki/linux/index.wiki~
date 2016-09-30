@@ -1,0 +1,143 @@
+%toc
+
+= Linux常用命令笔记 =
+
+{{{ bash
+# 远程同步文件
+rsync -azuP -e 'ssh -p 13250' root@198.71.92.241:/home/wwwroot/default/lnpan/Public/mh /home/wwwroot/default/lnpan_queue/Public/
+
+# 获取http状态码：
+curl -I -m 10 -o /dev/null -s -w %{http_code} 'http://www.leshen.com/templets/images/none.jpg'
+
+# 查找小于10k的所有文件
+find . -type f -size -10k | wc -l
+
+# 查看服务器上一共开了多少的 php-cgi 进程
+ps -fe |grep "php"|grep -v "grep"|wc -l
+
+# 查看已经有多少个php-cgi进程用来处理tcp请求
+netstat -anop |grep "php"|grep -v "grep"|wc -l
+
+# 批量kill进程
+ps -ef|grep queue.php |grep -v grep|cut -c 9-15|xargs kill -9
+
+ps -aux | grep tomcat
+netstat –apn | grep 8080
+netstat -pln | grep 29125 查看进程端口
+lsof -i:80 查看端口是否已开放
+netstat -lptn
+
+# 统计当前一级目录的大小并排序
+du -h --max-depth=1 |sort
+du -sh *
+
+# 删除当前目录下所有的.svn目录
+find . -type d -name ".svn"|xargs rm -rf
+
+#统计行数
+awk 'END{print NR}' api_ms_push_medias_success*
+
+#查看qps
+cat sphinx_rt_search_test* | awk -F '|' '{print $1}' | uniq -c | sort -n
+
+#统计执行时间
+cat getui_batch_* | grep Test_Batch_Getui | awk -F '_time\":' '{print $2}' | awk -F '}' '{print $1}' | awk '{ sum += $1; } END { print "sum = " sum; print "average = " sum/NR;print "line = " NR}'
+}}}
+
+== 开机自启动配置 ==
+{{{
+/etc/rc.d/rc.local
+/etc/rc.d/init.d/
+/etc/rc.local
+}}} 
+
+== 解压命令大全 ==
+.tar
+{{{
+解包：tar xvf FileName.tar
+打包：tar cvf FileName.tar DirName
+（注：tar是打包，不是压缩！）
+}}}
+
+.gz
+{{{
+解压1：gunzip FileName.gz
+解压2：gzip -d FileName.gz
+压缩：gzip FileName
+}}}
+
+.tar.gz 和 .tgz
+{{{
+解压：tar zxvf FileName.tar.gz
+压缩：tar zcvf FileName.tar.gz DirName
+}}}
+
+.bz2
+{{{
+解压1：bzip2 -d FileName.bz2
+解压2：bunzip2 FileName.bz2
+压缩： bzip2 -z FileName
+}}}
+
+.tar.bz2
+{{{
+解压：tar jxvf FileName.tar.bz2
+压缩：tar jcvf FileName.tar.bz2 DirName
+}}}
+
+.bz
+{{{
+解压1：bzip2 -d FileName.bz
+解压2：bunzip2 FileName.bz
+压缩：未知
+}}}
+
+.tar.bz
+{{{
+解压：tar jxvf FileName.tar.bz
+压缩：未知
+}}}
+
+.Z
+{{{
+解压：uncompress FileName.Z
+压缩：compress FileName
+}}}
+
+.tar.Z
+{{{
+解压：tar Zxvf FileName.tar.Z
+压缩：tar Zcvf FileName.tar.Z DirName
+}}}
+
+== Git常用命令 ==
+{{{
+# 去除已加入版本控制的文件，并忽略
+git rm -r --cached .
+git add .
+git commit -m 'update .gitignore'
+
+# 生成auth key
+ssh-keygen -t rsa -C “1551770001@qq.com"
+cat ~/.ssh/id_rsa.pub
+ssh -T git@git.oschina.net
+
+# 长期存储密码：
+git config --global credential.helper store
+
+# 更新远程地址：
+git remote rm origin
+git remote add origin XXX
+
+git checkout . #本地所有修改的。没有的提交的，都返回到原来的状态
+git stash #把所有没有提交的修改暂存到stash里面。可用git stash pop回复。
+git reset --hard HASH #返回到某个节点，不保留修改。
+git reset --soft HASH #返回到某个节点。保留修改
+
+# 打包 
+git bundle create readmine.bundle HEAD master
+# 解压 
+git clone readmine.bundle readmine
+}}}
+
+%title Linux常用命令笔记
