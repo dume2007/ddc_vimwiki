@@ -1,6 +1,20 @@
 = PHP是世界上最好的语言 =
 
-php就是世界上最好的语言
-
 %toc
+
+== PHP社区网站 ==
+	- https://segmentfault.com/
+	- http://stackoverflow.com/
+	- https://www.v2ex.com/
+	- http://www.tuicool.com/
+	- http://www.zhihu.com/topic/19552910
+	- http://www.openstack.cn/
+	- https://github.com/
+	- https://www.oschina.net/
+	- http://www.linuxidc.com/
+	- http://dockone.io/
+	- https://gogs.io/
+	- http://www.w3school.com.cn/php/index.asp
+
+
 %title PHP是世界上最好的语言
