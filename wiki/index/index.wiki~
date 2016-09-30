@@ -92,7 +92,7 @@ bin/kafka-producer-perf-test.sh --topic test --num-records 500000 --record-size=
 
 === 测试Kafka Consumer的性能  ===
 {{{
-bin/kafka-consumer-perf-test.sh
+bin/kafka-consumer-perf-test.sh --topic test --messages 100000 --zookeeper 127.0.0.1:2181 --broker-list 127.0.0.1:9092 --group myConsumerGroup --threads 2
 }}}
 
 === Kafka Manager管理 ===
