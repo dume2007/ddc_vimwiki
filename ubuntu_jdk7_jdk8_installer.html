@@ -4,9 +4,9 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
     <title>Ubuntu 安装 JDK 7 / JDK8 的两种方式</title>
   </head>
@@ -19,11 +19,11 @@
         <h2>个人日志便签博客 By dume2007@gmail.com</h2>
 
         <section id="downloads">
-          <a href="../index.html" class="btn">首页</a>
-          <a href="../php/index.html" class="btn">PHP</a>
-  	  <a href="../linux/index.html" class="btn">Linux</a>
-  	  <a href="../note/index.html" class="btn">便签</a>
-          <a href="../daily/index.html" class="btn">日记</a>
+          <a href="index.html" class="btn">首页</a>
+          <a href="php.html" class="btn">PHP</a>
+	  <a href="linux.html" class="btn">Linux</a>
+	  <a href="note.html" class="btn">便签</a>
+          <a href="daily.html" class="btn">日记</a>
           <a href="https://github.com/dume2007/ddc_vimwiki" target="_blank" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
       </div>
@@ -199,13 +199,13 @@ sudo vim ~/.bashrc
 </p>
 
 <p>
-<pre>
+&lt;pre&gt;
 ## set oracle jdk environment
 export JAVA_HOME=/usr/lib/jvm/jdk1.7.0_60  ## 这里要注意目录要换成自己解压的jdk 目录
 export JRE_HOME=${JAVA_HOME}/jre  
 export CLASSPATH=.:\({JAVA_HOME}/lib:\){JRE_HOME}/lib  
 export PATH=\({JAVA_HOME}/bin:\)PATH  
-</pre>
+&lt;/pre&gt;
 </p>
 
 <p>
@@ -259,6 +259,23 @@ jdk 安装成功!
 </p>
 
       </section>
+
+      <!-- 多说评论框 start -->
+      	<div class="ds-thread" data-thread-key="Ubuntu 安装 JDK 7 / JDK8 的两种方式" data-title="Ubuntu 安装 JDK 7 / JDK8 的两种方式" data-url="Ubuntu 安装 JDK 7 / JDK8 的两种方式"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+var duoshuoQuery = {short_name:"dume2007"};
+	(function() {
+	 		var ds = document.createElement('script');
+					ds.type = 'text/javascript';ds.async = true;
+							ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+									ds.charset = 'UTF-8';
+											(document.getElementsByTagName('head')[0] 
+											 		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+												})();
+	</script>
+	<!-- 多说公共JS代码 end -->
     </div>
 
     <footer>

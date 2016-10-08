@@ -22,7 +22,7 @@ bin/kafka-run-class.sh -name zookeeper -loggc org.apache.zookeeper.server.quorum
 
 === 查杀进程 ===
 {{{
-ps aux|grep zookeeper-server-start
+ps aux|grep [[zookeeper-server-start]]
 sudo kill -s TERM pid
 }}}
 
