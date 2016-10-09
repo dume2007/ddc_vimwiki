@@ -4,11 +4,11 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="%root_path%stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="%root_path%stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="%root_path%stylesheets/print.css" media="print">
 
-    <title>工作日记</title>
+    <title>%title%</title>
   </head>
 
   <body>
@@ -20,10 +20,10 @@
 
         <section id="downloads">
           <a href="index.html" class="btn">首页</a>
-          <a href="php.html" class="btn">PHP</a>
-	  <a href="linux.html" class="btn">Linux</a>
-	  <a href="python.html" class="btn">Python</a>
-          <a href="daily.html" class="btn">日记</a>
+          <a href="%root_path%php.html" class="btn">PHP</a>
+	  <a href="%root_path%linux.html" class="btn">Linux</a>
+	  <a href="%root_path%note.html" class="btn">便签</a>
+          <a href="%root_path%daily.html" class="btn">日记</a>
           <a href="https://github.com/dume2007/ddc_vimwiki" target="_blank" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
       </div>
@@ -31,13 +31,11 @@
 
     <div class="container">
       <section id="main_content">
-      
-<h1 id="toc_1">工作日记</h1>
-
+      %content%
       </section>
 
       <!-- 多说评论框 start -->
-      	<div class="ds-thread" data-thread-key="工作日记" data-title="工作日记" data-url="工作日记"></div>
+      	<div class="ds-thread" data-thread-key="%title%" data-title="%title%" data-url="%title%"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

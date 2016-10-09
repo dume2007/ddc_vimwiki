@@ -1,60 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+%toc
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+# [[ubuntu_jdk7_jdk8_installer|Ubuntu安装JDK7/JDK8的两种方式]]
 
-    <title>Linux常用命令笔记</title>
-  </head>
+= Linux常用命令笔记 =
 
-  <body>
-
-    <header>
-      <div class="container header_main">
-        <h1>邓莫尔的维基世界</h1>
-        <h2>个人日志便签博客 By dume2007@gmail.com</h2>
-
-        <section id="downloads">
-          <a href="index.html" class="btn">首页</a>
-          <a href="php.html" class="btn">PHP</a>
-	  <a href="linux.html" class="btn">Linux</a>
-	  <a href="python.html" class="btn">Python</a>
-          <a href="daily.html" class="btn">日记</a>
-          <a href="https://github.com/dume2007/ddc_vimwiki" target="_blank" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
-
-    <div class="container">
-      <section id="main_content">
-      
-<div class="toc">
-<ul>
-<li><a href="#toc_1">Linux常用命令笔记</a>
-<ul>
-<li><a href="#toc_1.1">开机自启动配置</a>
-<li><a href="#toc_1.2">解压命令大全</a>
-<li><a href="#toc_1.3">Git常用命令</a>
-</ul>
-</ul>
-</div>
-
-<ol>
-<li>
-<a href="ubuntu_jdk7_jdk8_installer.html">Ubuntu安装JDK7/JDK8的两种方式</a>
-
-<li>
-<a href="vimwiki_commands_help.html">Vimwiki常用命令</a>
-
-</ol>
-
-<h1 id="toc_1">Linux常用命令笔记</h1>
-
-<pre  bash>
+{{{ bash
 # 远程同步文件
 rsync -azuP -e 'ssh -p 13250' root@198.71.92.241:/home/wwwroot/default/lnpan/Public/mh /home/wwwroot/default/lnpan_queue/Public/
 
@@ -94,94 +44,76 @@ cat sphinx_rt_search_test* | awk -F '|' '{print $1}' | uniq -c | sort -n
 
 #统计执行时间
 cat getui_batch_* | grep Test_Batch_Getui | awk -F '_time\":' '{print $2}' | awk -F '}' '{print $1}' | awk '{ sum += $1; } END { print "sum = " sum; print "average = " sum/NR;print "line = " NR}'
-</pre>
+}}}
 
-<h2 id="toc_1.1">开机自启动配置</h2>
-<pre>
+== 开机自启动配置 ==
+{{{
 /etc/rc.d/rc.local
 /etc/rc.d/init.d/
 /etc/rc.local
-</pre>
+}}} 
 
-<h2 id="toc_1.2">解压命令大全</h2>
-<p>
+== 解压命令大全 ==
 .tar
-</p>
-<pre>
+{{{
 解包：tar xvf FileName.tar
 打包：tar cvf FileName.tar DirName
 （注：tar是打包，不是压缩！）
-</pre>
+}}}
 
-<p>
 .gz
-</p>
-<pre>
+{{{
 解压1：gunzip FileName.gz
 解压2：gzip -d FileName.gz
 压缩：gzip FileName
-</pre>
+}}}
 
-<p>
 .tar.gz 和 .tgz
-</p>
-<pre>
+{{{
 解压：tar zxvf FileName.tar.gz
 压缩：tar zcvf FileName.tar.gz DirName
-</pre>
+}}}
 
-<p>
 .bz2
-</p>
-<pre>
+{{{
 解压1：bzip2 -d FileName.bz2
 解压2：bunzip2 FileName.bz2
 压缩： bzip2 -z FileName
-</pre>
+}}}
 
-<p>
 .tar.bz2
-</p>
-<pre>
+{{{
 解压：tar jxvf FileName.tar.bz2
 压缩：tar jcvf FileName.tar.bz2 DirName
-</pre>
+}}}
 
-<p>
 .bz
-</p>
-<pre>
+{{{
 解压1：bzip2 -d FileName.bz
 解压2：bunzip2 FileName.bz
 压缩：未知
-</pre>
+}}}
 
-<p>
 .tar.bz
-</p>
-<pre>
+{{{
 解压：tar jxvf FileName.tar.bz
 压缩：未知
-</pre>
+}}}
 
-<p>
 .Z
-</p>
-<pre>
+{{{
 解压：uncompress FileName.Z
 压缩：compress FileName
-</pre>
+}}}
 
-<p>
 .tar.Z
-</p>
-<pre>
+{{{
 解压：tar Zxvf FileName.tar.Z
 压缩：tar Zcvf FileName.tar.Z DirName
-</pre>
+}}}
 
-<h2 id="toc_1.3">Git常用命令</h2>
-<pre>
+== Git常用命令 ==
+{{{
 # 默认提交者
 git config --global user.name "你的名字"
 git config --global user.email "你的Email"
@@ -212,31 +144,6 @@ git reset --soft HASH #返回到某个节点。保留修改
 git bundle create readmine.bundle HEAD master
 # 解压 
 git clone readmine.bundle readmine
-</pre>
+}}}
 
-      </section>
-
-      <!-- 多说评论框 start -->
-      	<div class="ds-thread" data-thread-key="Linux常用命令笔记" data-title="Linux常用命令笔记" data-url="Linux常用命令笔记"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-var duoshuoQuery = {short_name:"dume2007"};
-	(function() {
-	 		var ds = document.createElement('script');
-					ds.type = 'text/javascript';ds.async = true;
-							ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-									ds.charset = 'UTF-8';
-											(document.getElementsByTagName('head')[0] 
-											 		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-												})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-    </div>
-
-    <footer>
-      <p>&copy;2016 邓莫尔的维基世界 - Vimwiki构建</p>
-    </footer>
-
-  </body>
-</html>
+%title Linux常用命令笔记

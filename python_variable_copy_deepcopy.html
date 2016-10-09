@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>工作日记</title>
+    <title>Pyhon变量的赋值与拷贝</title>
   </head>
 
   <body>
@@ -32,12 +32,64 @@
     <div class="container">
       <section id="main_content">
       
-<h1 id="toc_1">工作日记</h1>
+<h1 id="toc_1">Python变量的赋值与拷贝</h1>
+
+<p>
+之前要对一个list对象进行操作，为了保留原始对象值，所以进行了简单赋值，打印出来发现两个变量同时变了~
+</p>
+<pre  class="brush:python">
+&gt;&gt;&gt; lst = [1,2,3]
+&gt;&gt;&gt; lst
+[1, 2, 3]
+&gt;&gt;&gt; org_lst = lst
+&gt;&gt;&gt; org_lst
+[1, 2, 3]
+&gt;&gt;&gt; lst.pop()
+3
+&gt;&gt;&gt; lst
+[1, 2]
+&gt;&gt;&gt; org_lst
+[1, 2]
+&gt;&gt;&gt;
+</pre>
+
+<p>
+显然要复制一个可变对象的副本，简单的赋值是行不通的。这跟PHP还是有区别的，不小心踩了一个坑~ 经过查找资料，发现Python提供了一个copy模块，是专门用于可变对象的复制的。
+copy中有两个方法：浅拷贝copy.copy() 和 深拷贝copy.deepcopy()，下面举个例子：
+</p>
+<pre>
+&gt;&gt;&gt; import copy
+&gt;&gt;&gt; lst
+[1, 2, 3]
+&gt;&gt;&gt; org_lst = copy.copy(lst)
+&gt;&gt;&gt; lst.append(4)
+&gt;&gt;&gt; lst
+[1, 2, 3, 4]
+&gt;&gt;&gt; org_lst
+[1, 2, 3]
+</pre>
+
+<p>
+以上是浅拷贝，通过copy副本就不随原对象改变了，如果要拷贝深度对象，就需要用到深拷贝deepcopy()，看个例子：
+</p>
+<pre>
+&gt;&gt;&gt; a = [[1,2], [3,4]]
+&gt;&gt;&gt; b = copy.copy(a)
+&gt;&gt;&gt; c = copy.deepcopy(a)
+&gt;&gt;&gt; print a,b,c
+[[1, 2], [3, 4]] [[1, 2], [3, 4]] [[1, 2], [3, 4]]
+&gt;&gt;&gt; a[0][1] = 5
+&gt;&gt;&gt; print a,b,c
+[[1, 5], [3, 4]] [[1, 5], [3, 4]] [[1, 2], [3, 4]]
+</pre>
+<p>
+以上对比可以发现，当a的内部对象变更之后，通过copy()浅拷贝内部对象也跟着变了，而通过deepcopy()则是保持原始值。
+</p>
 
       </section>
 
       <!-- 多说评论框 start -->
-      	<div class="ds-thread" data-thread-key="工作日记" data-title="工作日记" data-url="工作日记"></div>
+      	<div class="ds-thread" data-thread-key="Pyhon变量的赋值与拷贝" data-title="Pyhon变量的赋值与拷贝" data-url="Pyhon变量的赋值与拷贝"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
