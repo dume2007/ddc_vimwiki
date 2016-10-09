@@ -32,9 +32,9 @@ sudo kill -s TERM pid
 == 2）kafka集群 ==
 === 启动3台kafka broker ===
 {{{
-sudo bin/kafka-server-start.sh config/server.properties >> /tmp/kafka-startup.log &
-sudo bin/kafka-server-start.sh config/server-1.properties >> /tmp/kafka-startup-1.log &
-sudo bin/kafka-server-start.sh config/server-2.properties >> /tmp/kafka-startup-2.log &
+sudo env JMX_PORT=10000 bin/kafka-server-start.sh config/server.properties >> /tmp/kafka-startup.log &
+sudo env JMX_PORT=10001 bin/kafka-server-start.sh config/server-1.properties >> /tmp/kafka-startup-1.log &
+sudo env JMX_PORT=10002 bin/kafka-server-start.sh config/server-2.properties >> /tmp/kafka-startup-2.log &
 }}}
 
 ps aux|grep kafka-server-start.sh

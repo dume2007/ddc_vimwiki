@@ -32,9 +32,9 @@ sudo kill -s TERM pid
 == 2）kafka集群 ==
 === 启动3台kafka broker ===
 {{{
-sudo bin/kafka-server-start.sh config/server.properties >> /tmp/kafka-startup.log &
-sudo bin/kafka-server-start.sh config/server-1.properties >> /tmp/kafka-startup-1.log &
-sudo bin/kafka-server-start.sh config/server-2.properties >> /tmp/kafka-startup-2.log &
+sudo env JMX_PORT=10000 bin/kafka-server-start.sh config/server.properties >> /tmp/kafka-startup.log &
+sudo env JMX_PORT=10001 bin/kafka-server-start.sh config/server-1.properties >> /tmp/kafka-startup-1.log &
+sudo env JMX_PORT=10002 bin/kafka-server-start.sh config/server-2.properties >> /tmp/kafka-startup-2.log &
 }}}
 
 ps aux|grep kafka-server-start.sh
@@ -129,8 +129,12 @@ vim kafka-manager-1.3.0.4/conf/application.conf
 
 ==== 启动manager ====
 {{{
-nohup bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port 9001 &
+sudo bin/kafka-manager -Dconfig.file=conf/application.conf -Dhttp.port 9001 &
+sudo bin/kafka-manager -Dkafka-manager.zkhosts="127.0.0.1:2181" &
 }}}
+
+默认Web UI地址：http://172.28.128.3:9000/
+
 
 == 5）参考资料 ==
 - 官方文档：http://kafka.apache.org/quickstart.html
