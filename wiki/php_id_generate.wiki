@@ -1,0 +1,130 @@
+%toc
+
+= php扩展编写：ID发号器 =
+
+== ID发号器用途 ==
+
+- 统一系统业务数据表自增id。支持分布式，id唯一性。通过集群最多一秒内可生成300万个id
+- 环境需求：64位系统、swoole
+- 组成结构：固定输出格式bigint(19)，内含时间戳信息+业务编号id+服务器id信息
+- 传输协议：TCP协议，使用swoole进行数据下发
+- 64位ID位数分布
+
+{{{
+| 空位 | 毫秒级时间戳 | 服务器编号 | 业务编号 | 自增id |
+| 2    | 41           | 6          | 7        | 8      |
+}}}
+
+根据以上位数组成
+- 发号器大约可使用 2^41/1000/3600/24/365=70年
+- 可部署63台集群
+- 支持127个业务
+- 单台服务每毫秒可生成255个id，经过实测php生成速度大约为50左右
+
+== 编写php扩展基本步骤  ==
+
+=== 1、下载php源码，本文基于php5.6.22 ===
+解压后进入源码ext目录，cd ext
+=== 3、使用php提供的脚手架脚本ext_skel ===
+一键生成php扩展所需的基本文件
+{{{
+./ext_skel --extname=IDGen
+}}}
+=== 4、修改三个文件config.m4，IDGen.c，php_IDGen.h ===
+ext目录下生成了一个IDGen的文件夹，cd IDGen 进入，主要修改三个文件：config.m4，IDGen.c，php_IDGen.h
+	* config.m4 移除以下几行的dnl注释
+	{{{
+PHP_ARG_WITH(IDGen, for IDGen support,
+Make sure that the comment is aligned:
+[  --with-IDGen             Include IDGen support])
+}}}
+	* php_IDGen.h 通过宏命令PHP_METHOD 添加想要注册的类方法，比如在文件底部增加：
+	{{{
+PHP_METHOD(IDGen, __construct);
+PHP_METHOD(IDGen, __destruct);
+PHP_METHOD(IDGen, get);
+PHP_METHOD(IDGen, parse);
+PHP_METHOD(IDGen, getCurrConfig);
+}}}
+	* IDGen.c 最后就是在这个文件里编写相应的C扩展了, 譬如我们在h头文件里面注册了五个方法，那么在c里通过PHP_METHOD实现
+{{{
+PHP_METHOD(IDGen, __construct) {
+	//php_printf("__construct called.\n");
+}
+
+PHP_METHOD(IDGen, __destruct) {
+	//php_printf("__destruct called.\n");
+}
+
+PHP_METHOD(IDGen, get) {
+}
+
+PHP_METHOD(IDGen, parse) {
+}
+
+PHP_METHOD(IDGen, getCurrConfig) {
+}
+}}}
+	* 在实现以上几个方法之前需对以下几点进行改动：声明类成员函数
+{{{
+const zend_function_entry IDGen_functions[] = {
+	PHP_ME(IDGen, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(IDGen, __destruct,  NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
+	PHP_ME(IDGen, get, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(IDGen, parse, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(IDGen, getCurrConfig, NULL, ZEND_ACC_PUBLIC)
+	PHP_FE_END	/* Must be the last line in IDGen_functions[] */
+}
+}}}	
+	* 声明类成员属性
+{{{
+zend_class_entry *idgen_ce;
+PHP_MINIT_FUNCTION(IDGen)
+{
+	/* If you have INI entries, uncomment these lines 
+	   REGISTER_INI_ENTRIES();
+	   */
+	zend_class_entry idgen; INIT_CLASS_ENTRY(idgen, "IDGen", IDGen_functions);
+	idgen_ce = zend_register_internal_class_ex(&idgen, NULL, NULL TSRMLS_CC);
+
+	zend_declare_property_null(idgen_ce, ZEND_STRL("server_id"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(idgen_ce, ZEND_STRL("sequence_id"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(idgen_ce, ZEND_STRL("last_timestamp"), ZEND_ACC_PRIVATE TSRMLS_CC);
+
+	return SUCCESS;
+}
+}}}
+
+=== 5、编译安装 ===
+{{{
+phpize
+./configure
+make
+sudo make install
+}}}
+查看php.ini位置
+{{{
+php --ini
+}}}
+添加IDGen.so扩展
+{{{
+extension=IDGen.so
+php -m
+}}}
+
+=== 6、客户端调用 ===
+{{{
+$IDGen = new IDGen;
+$id = $IDGen->get(1);
+var_dump($id);
+
+$parse = $IDGen->parse($id);
+print_r($parse);
+}}}
+
+== 获取Github上的php扩展源码 ==
+
+本扩展还有待完善优化的地方，纯属学习。另外可参考源码上纯C实现的test_IDGen.c<br>
+https://github.com/dume2007/php_extension_idgen
+
+%title php扩展编写：ID发号器

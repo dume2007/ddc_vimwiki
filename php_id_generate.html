@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>php扩展编写：ID发号器</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container header_main">
+        <h1>邓莫尔的维基世界</h1>
+        <h2>个人日志便签博客 By dume2007@gmail.com</h2>
+
+        <section id="downloads">
+          <a href="index.html" class="btn">首页</a>
+          <a href="php.html" class="btn">PHP</a>
+	  <a href="linux.html" class="btn">Linux</a>
+	  <a href="python.html" class="btn">Python</a>
+          <a href="daily.html" class="btn">日记</a>
+          <a href="https://github.com/dume2007/ddc_vimwiki" target="_blank" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+      
+<div class="toc">
+<ul>
+<li><a href="#toc_1">php扩展编写：ID发号器</a>
+<ul>
+<li><a href="#toc_1.1">ID发号器用途</a>
+<li><a href="#toc_1.2">编写php扩展基本步骤</a>
+<ul>
+<li><a href="#toc_1.2.1">1、下载php源码，本文基于php5.6.22</a>
+<li><a href="#toc_1.2.2">3、使用php提供的脚手架脚本ext_skel</a>
+<li><a href="#toc_1.2.3">4、修改三个文件config.m4，IDGen.c，php_IDGen.h</a>
+<li><a href="#toc_1.2.4">5、编译安装</a>
+<li><a href="#toc_1.2.5">6、客户端调用</a>
+</ul>
+<li><a href="#toc_1.3">获取Github上的php扩展源码</a>
+</ul>
+</ul>
+</div>
+
+<h1 id="toc_1">php扩展编写：ID发号器</h1>
+
+<h2 id="toc_1.1">ID发号器用途</h2>
+
+<ul>
+<li>
+统一系统业务数据表自增id。支持分布式，id唯一性。通过集群最多一秒内可生成300万个id
+
+<li>
+环境需求：64位系统、swoole
+
+<li>
+组成结构：固定输出格式bigint(19)，内含时间戳信息+业务编号id+服务器id信息
+
+<li>
+传输协议：TCP协议，使用swoole进行数据下发
+
+<li>
+64位ID位数分布
+
+</ul>
+
+<pre>
+| 空位 | 毫秒级时间戳 | 服务器编号 | 业务编号 | 自增id |
+| 2    | 41           | 6          | 7        | 8      |
+</pre>
+
+<p>
+根据以上位数组成
+</p>
+<ul>
+<li>
+发号器大约可使用 2^41/1000/3600/24/365=70年
+
+<li>
+可部署63台集群
+
+<li>
+支持127个业务
+
+<li>
+单台服务每毫秒可生成255个id，经过实测php生成速度大约为50左右
+
+</ul>
+
+<h2 id="toc_1.2">编写php扩展基本步骤</h2>
+
+<h3 id="toc_1.2.1">1、下载php源码，本文基于php5.6.22</h3>
+<p>
+解压后进入源码ext目录，cd ext
+</p>
+<h3 id="toc_1.2.2">3、使用php提供的脚手架脚本ext_skel</h3>
+<p>
+一键生成php扩展所需的基本文件
+</p>
+<pre>
+./ext_skel --extname=IDGen
+</pre>
+<h3 id="toc_1.2.3">4、修改三个文件config.m4，IDGen.c，php_IDGen.h</h3>
+<p>
+ext目录下生成了一个IDGen的文件夹，cd IDGen 进入，主要修改三个文件：config.m4，IDGen.c，php_IDGen.h
+</p>
+<ul>
+<li>
+config.m4 移除以下几行的dnl注释
+<pre>
+PHP_ARG_WITH(IDGen, for IDGen support,
+Make sure that the comment is aligned:
+[  --with-IDGen             Include IDGen support])
+</pre>
+
+<li>
+php_IDGen.h 通过宏命令PHP_METHOD 添加想要注册的类方法，比如在文件底部增加：
+<pre>
+PHP_METHOD(IDGen, __construct);
+PHP_METHOD(IDGen, __destruct);
+PHP_METHOD(IDGen, get);
+PHP_METHOD(IDGen, parse);
+PHP_METHOD(IDGen, getCurrConfig);
+</pre>
+
+<li>
+IDGen.c 最后就是在这个文件里编写相应的C扩展了, 譬如我们在h头文件里面注册了五个方法，那么在c里通过PHP_METHOD实现
+<pre>
+PHP_METHOD(IDGen, __construct) {
+	//php_printf("__construct called.\n");
+}
+
+PHP_METHOD(IDGen, __destruct) {
+	//php_printf("__destruct called.\n");
+}
+
+PHP_METHOD(IDGen, get) {
+}
+
+PHP_METHOD(IDGen, parse) {
+}
+
+PHP_METHOD(IDGen, getCurrConfig) {
+}
+</pre>
+
+<li>
+在实现以上几个方法之前需对以下几点进行改动：声明类成员函数
+<pre>
+const zend_function_entry IDGen_functions[] = {
+	PHP_ME(IDGen, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(IDGen, __destruct,  NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
+	PHP_ME(IDGen, get, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(IDGen, parse, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(IDGen, getCurrConfig, NULL, ZEND_ACC_PUBLIC)
+	PHP_FE_END	/* Must be the last line in IDGen_functions[] */
+}
+</pre>
+
+<li>
+声明类成员属性
+<pre>
+zend_class_entry *idgen_ce;
+PHP_MINIT_FUNCTION(IDGen)
+{
+	/* If you have INI entries, uncomment these lines 
+	   REGISTER_INI_ENTRIES();
+	   */
+	zend_class_entry idgen; INIT_CLASS_ENTRY(idgen, "IDGen", IDGen_functions);
+	idgen_ce = zend_register_internal_class_ex(&amp;idgen, NULL, NULL TSRMLS_CC);
+
+	zend_declare_property_null(idgen_ce, ZEND_STRL("server_id"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(idgen_ce, ZEND_STRL("sequence_id"), ZEND_ACC_PRIVATE TSRMLS_CC);
+	zend_declare_property_null(idgen_ce, ZEND_STRL("last_timestamp"), ZEND_ACC_PRIVATE TSRMLS_CC);
+
+	return SUCCESS;
+}
+</pre>
+
+</ul>
+
+<h3 id="toc_1.2.4">5、编译安装</h3>
+<pre>
+phpize
+./configure
+make
+sudo make install
+</pre>
+<p>
+查看php.ini位置
+</p>
+<pre>
+php --ini
+</pre>
+<p>
+添加IDGen.so扩展
+</p>
+<pre>
+extension=IDGen.so
+php -m
+</pre>
+
+<h3 id="toc_1.2.5">6、客户端调用</h3>
+<pre>
+$IDGen = new IDGen;
+$id = $IDGen-&gt;get(1);
+var_dump($id);
+
+$parse = $IDGen-&gt;parse($id);
+print_r($parse);
+</pre>
+
+<h2 id="toc_1.3">获取Github上的php扩展源码</h2>
+
+<p>
+本扩展还有待完善优化的地方，纯属学习。另外可参考源码上纯C实现的test_IDGen.c<br>
+<a href="https://github.com/dume2007/php_extension_idgen">https://github.com/dume2007/php_extension_idgen</a>
+</p>
+
+      </section>
+
+      <!-- 多说评论框 start -->
+      	<div class="ds-thread" data-thread-key="php扩展编写：ID发号器" data-title="php扩展编写：ID发号器" data-url="php扩展编写：ID发号器"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+var duoshuoQuery = {short_name:"dume2007"};
+	(function() {
+	 		var ds = document.createElement('script');
+					ds.type = 'text/javascript';ds.async = true;
+							ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+									ds.charset = 'UTF-8';
+											(document.getElementsByTagName('head')[0] 
+											 		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+												})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+    </div>
+
+    <footer>
+      <p>&copy;2016 邓莫尔的维基世界 - Vimwiki构建</p>
+    </footer>
+
+  </body>
+</html>
